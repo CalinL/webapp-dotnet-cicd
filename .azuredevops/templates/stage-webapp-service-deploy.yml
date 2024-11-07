@@ -1,0 +1,17 @@
+parameters:
+- name: WebAppEnvironment
+  default: ''
+- name: WebAppName
+  default: ''
+- name: AzSubscription
+  default: ''
+
+stages:
+- stage: Deploy_${{ replace(parameters.WebAppEnvironment, '-', '_') }}
+  displayName: 'Deploy to ${{ parameters.WebAppEnvironment }} environment'
+  jobs:
+  - template: job-webapp-service-deploy.yml
+    parameters:
+      WebAppEnvironment: '${{ parameters.WebAppEnvironment }}'
+      WebAppName: '${{ parameters.WebAppName }}'
+      AzSubscription: '${{ parameters.AzSubscription }}'

@@ -1,0 +1,28 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+
+variables:
+- template: ../templates/global-variables.yml 
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../templates/job-webapp-dotnet-build.yml 
+
+- template: ../templates/stage-webapp-service-deploy.yml 
+  parameters:
+    WebAppEnvironment: '${{ variables.WebAppEnvironmentDEV }}'
+    WebAppName: '$(WebAppNameDEV)'
+    AzSubscription: '$(AzSubscriptionNonProd)'
+
+- stage: DeployToQA
+  displayName: 'Deploy to ${{ variables.WebAppEnvironmentQA }} environment'
+  jobs:
+  - template: ../templates/job-webapp-service-deploy.yml 
+    parameters:
+      WebAppEnvironment: '$(WebAppEnvironmentQA)'
+      WebAppName: '$(WebAppNameQA)'
+      AzSubscription: '$(AzSubscriptionNonProd)'

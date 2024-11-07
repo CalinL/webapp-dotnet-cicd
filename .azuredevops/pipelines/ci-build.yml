@@ -1,0 +1,20 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - features/*
+    - topics/*
+    - fixes/*
+    - hotfixes/*
+    - bugs/*
+    exclude:
+    - main
+    - releases/*
+
+variables:
+- template: ../templates/global-variables.yml 
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../templates/job-webapp-dotnet-build.yml 

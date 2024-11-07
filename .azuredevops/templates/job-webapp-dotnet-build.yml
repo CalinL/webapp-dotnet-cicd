@@ -1,0 +1,41 @@
+parameters:
+- name: BuildConfiguration
+  default: $(BuildConfiguration)
+- name: ProjectSolution
+  default: $(ProjectSolution)
+
+jobs:
+- job: Build
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - script: dotnet restore ${{ parameters.ProjectSolution }}
+    displayName: 'Restore'
+  
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      command: build
+      projects: '**/*.csproj'
+      arguments: '--configuration ${{ parameters.BuildConfiguration }}'
+  
+  - task: DotNetCoreCLI@2
+    displayName: Test
+    inputs:
+      command: test
+      projects: '**/*Tests/*.csproj'
+      arguments: '--configuration ${{ parameters.BuildConfiguration }}'
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration ${{ parameters.BuildConfiguration }} --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: True
+  
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()

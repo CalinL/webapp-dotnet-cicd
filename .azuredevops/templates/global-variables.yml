@@ -1,0 +1,29 @@
+# Define global variables
+variables:
+- name: WebAppEnvironmentDEV
+  value: 'WebApp-DEV'
+- name: WebAppEnvironmentQA
+  value: 'WebApp-QA'
+- name: WebAppEnvironmentUAT
+  value: 'WebApp-UAT'
+- name: WebAppEnvironmentPROD
+  value: 'WebApp-PROD'
+
+- name: WebAppNameDEV
+  value: 'devops-yaml-dev'
+- name: WebAppNameQA
+  value: 'devops-yaml-qa'
+- name: WebAppNameUAT
+  value: 'devops-yaml-qa'
+- name: WebAppNamePROD
+  value: 'devops-yaml-prod'
+
+- name: BuildConfiguration
+  value: 'Release'
+- name: ProjectSolution
+  value: './webapp-dotnet.sln'
+
+- name: AzSubscriptionNonProd
+  value: 'NonProd-VSESubscription'
+- name: AzSubscriptionProd
+  value: 'Prod-VSESubscription'

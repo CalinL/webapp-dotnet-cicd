@@ -1,0 +1,33 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - releases/*
+
+variables:
+- template: ../templates/global-variables.yml 
+
+stages:
+- stage: Build
+  jobs:
+  - template: ../templates/job-webapp-dotnet-build.yml 
+
+- stage: DeployToUAT
+  displayName: 'Deploy to ${{ variables.WebAppEnvironmentUAT }} environment'
+  dependsOn: Build
+  jobs:
+  - template: ../templates/job-webapp-service-deploy.yml 
+    parameters:
+      WebAppEnvironment: '$(WebAppEnvironmentUAT)'
+      WebAppName: '$(WebAppNameUAT)'
+      AzSubscription: '$(AzSubscriptionProd)'
+
+- stage: DeployToPROD
+  displayName: 'Deploy to ${{ variables.WebAppEnvironmentPROD }} environment'
+  dependsOn: DeployToUAT
+  jobs:
+  - template: ../templates/job-webapp-service-deploy.yml 
+    parameters:
+      WebAppEnvironment: '$(WebAppEnvironmentPROD)'
+      WebAppName: '$(WebAppNamePROD)'
+      AzSubscription: '$(AzSubscriptionProd)'
